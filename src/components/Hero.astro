@@ -1,0 +1,47 @@
+---
+import { site } from "../data/site";
+---
+
+<section
+  id="top"
+  class="relative flex min-h-[100svh] flex-col justify-end pb-16 pt-28 md:justify-center md:pb-24 md:pt-32"
+>
+  <div class="mx-auto w-full max-w-5xl px-6 md:px-8">
+    <p
+      class="animate-hero-rise font-body text-sm font-semibold uppercase tracking-[0.18em] text-bloom"
+    >
+      Portfolio
+    </p>
+    <h1
+      class="animate-hero-rise animate-hero-rise-delay-1 mt-4 font-display text-[clamp(2.75rem,10vw,5.75rem)] font-extrabold leading-[0.95] tracking-tight text-ink"
+    >
+      {site.name}
+    </h1>
+    <p
+      class="animate-hero-rise animate-hero-rise-delay-2 mt-5 max-w-xl font-display text-xl font-semibold text-ink md:text-2xl"
+    >
+      {site.role}
+    </p>
+    <p
+      class="animate-hero-rise animate-hero-rise-delay-2 mt-3 max-w-lg text-base leading-relaxed text-ink-muted md:text-lg"
+    >
+      {site.tagline}
+    </p>
+    <div
+      class="animate-hero-rise animate-hero-rise-delay-3 mt-10 flex flex-wrap items-center gap-4"
+    >
+      <a
+        href="#projects"
+        class="inline-flex items-center justify-center bg-bloom px-6 py-3 font-display text-sm font-semibold text-white transition-colors hover:bg-bloom-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bloom"
+      >
+        View projects
+      </a>
+      <a
+        href="#contact"
+        class="inline-flex items-center justify-center border border-ink/20 bg-transparent px-6 py-3 font-display text-sm font-semibold text-ink transition-colors hover:border-ink hover:bg-ink/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bloom"
+      >
+        Contact
+      </a>
+    </div>
+  </div>
+</section>

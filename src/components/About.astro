@@ -1,0 +1,32 @@
+---
+import { site } from "../data/site";
+---
+
+<section id="about" class="border-t border-line/60 py-20 md:py-28" aria-labelledby="about-heading">
+  <div class="reveal mx-auto max-w-5xl px-6 md:px-8">
+    <h2
+      id="about-heading"
+      class="font-display text-sm font-semibold uppercase tracking-[0.18em] text-bloom"
+    >
+      About
+    </h2>
+    <p
+      class="mt-6 max-w-2xl font-display text-2xl font-semibold leading-snug tracking-tight text-ink md:text-3xl"
+    >
+      I study computer science and build software that solves real problems — whether that means
+      quieter social feeds or safer passwords.
+    </p>
+    <p class="mt-6 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg">
+      When I’m not shipping projects, I’m learning how systems fit together and how design
+      communicates. I work primarily with {site.stack.slice(0, -1).join(", ")}, and{" "}
+      {site.stack[site.stack.length - 1]}.
+    </p>
+    <ul class="mt-10 flex flex-wrap gap-x-8 gap-y-2" aria-label="Primary technologies">
+      {
+        site.stack.map((tech) => (
+          <li class="font-display text-sm font-semibold tracking-wide text-ink">{tech}</li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
