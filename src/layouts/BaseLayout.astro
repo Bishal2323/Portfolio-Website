@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import ChillButton from "../components/ChillButton.astro";
 
 interface Props {
   title?: string;
@@ -7,7 +8,7 @@ interface Props {
 }
 
 const {
-  title = "Bishal Lamsal — CS Student & Software Developer",
+  title = "Bishal Lamsal Portfolio",
   description = "Portfolio of Bishal Lamsal — Computer Science student and software developer building with JavaScript, Python, and Java.",
 } = Astro.props;
 ---
@@ -16,7 +17,12 @@ const {
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Favicons: files live in /public and are served from site root (/) -->
+    <link rel="icon" href="/favicon.ico?v=3" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/favicon.png?v=3" sizes="48x48" />
+    <link rel="shortcut icon" href="/favicon.ico?v=3" />
+    <link rel="apple-touch-icon" href="/images/headshot.jpg" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
@@ -29,6 +35,7 @@ const {
     <title>{title}</title>
   </head>
   <body class="antialiased">
+    <ChillButton />
     <slot />
     <script>
       const observer = new IntersectionObserver(

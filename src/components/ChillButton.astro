@@ -1,0 +1,429 @@
+---
+/**
+ * Chill Mode — glass play/pause + volume control + Mermaid song.
+ * No page theme changes; audio only.
+ */
+---
+
+<audio
+  id="chill-audio"
+  src="/songs/mermaid-song-by-manose.mp3"
+  preload="auto"
+  hidden
+></audio>
+
+<div class="chill-controls" id="chill-controls" data-playing="false">
+  <div class="chill-volume" id="chill-volume" hidden>
+    <button
+      type="button"
+      class="chill-volume__mute"
+      id="chill-mute-btn"
+      aria-label="Mute"
+      title="Mute"
+    >
+      <span data-icon-volume aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M4 10v4h3.5L12 18.5V5.5L7.5 10H4zm11.5 2a3.5 3.5 0 0 0-1.5-2.9v5.8A3.5 3.5 0 0 0 15.5 12zm-1.5-7v1.6a6 6 0 0 1 0 10.8V19a7.5 7.5 0 0 0 0-14z"
+          ></path>
+        </svg>
+      </span>
+      <span data-icon-muted hidden aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M4 10v4h3.5L12 18.5V5.5L7.5 10H4zm12.7-3.3 1.4 1.4L16.4 10l1.7 1.9-1.4 1.4L15 11.4l-1.7 1.9-1.4-1.4L13.6 10l-1.7-1.9 1.4-1.4L15 8.6l1.7-1.9z"
+          ></path>
+        </svg>
+      </span>
+    </button>
+    <label class="chill-volume__label" for="chill-volume-slider">
+      <span class="sr-only">Volume</span>
+      <input
+        type="range"
+        id="chill-volume-slider"
+        class="chill-volume__slider"
+        min="0"
+        max="1"
+        step="0.01"
+        value="0.7"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="70"
+        aria-label="Chill Mode volume"
+      />
+    </label>
+  </div>
+
+  <button
+    type="button"
+    id="vibe-mode-btn"
+    class="vibe-mode-btn"
+    aria-pressed="false"
+    aria-label="Play Chill Mode"
+    title="Chill Mode"
+  >
+    <span class="vibe-mode-btn__icon" data-icon-play aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86A1 1 0 0 0 8 5.14z"></path>
+      </svg>
+    </span>
+    <span class="vibe-mode-btn__icon" data-icon-pause hidden aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <rect x="6" y="5" width="4" height="14" rx="1"></rect>
+        <rect x="14" y="5" width="4" height="14" rx="1"></rect>
+      </svg>
+    </span>
+    <span class="vibe-mode-btn__label" data-idle>Chill</span>
+    <span class="vibe-mode-btn__label" data-active hidden>Playing</span>
+  </button>
+</div>
+
+<style>
+  #chill-audio {
+    display: none;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .chill-controls {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.65rem;
+  }
+
+  .glass-surface {
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 999px;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.55) 0%,
+      rgba(232, 238, 242, 0.35) 50%,
+      rgba(255, 255, 255, 0.25) 100%
+    );
+    backdrop-filter: blur(14px) saturate(1.35);
+    -webkit-backdrop-filter: blur(14px) saturate(1.35);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.65) inset,
+      0 8px 24px rgba(18, 24, 32, 0.08);
+  }
+
+  .chill-volume {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.55rem 0.85rem 0.55rem 0.65rem;
+    color: var(--color-ink);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 999px;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.55) 0%,
+      rgba(232, 238, 242, 0.35) 50%,
+      rgba(255, 255, 255, 0.25) 100%
+    );
+    backdrop-filter: blur(14px) saturate(1.35);
+    -webkit-backdrop-filter: blur(14px) saturate(1.35);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.65) inset,
+      0 8px 24px rgba(18, 24, 32, 0.08);
+    animation: chill-volume-in 0.28s ease both;
+  }
+
+  .chill-volume[hidden] {
+    display: none;
+  }
+
+  @keyframes chill-volume-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .chill-volume__mute {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .chill-volume__mute:hover {
+    color: var(--color-bloom-deep);
+  }
+
+  .chill-volume__mute:focus-visible {
+    outline: 2px solid var(--color-bloom);
+    outline-offset: 2px;
+  }
+
+  .chill-volume__label {
+    display: flex;
+    align-items: center;
+  }
+
+  .chill-volume__slider {
+    width: 96px;
+    height: 4px;
+    appearance: none;
+    -webkit-appearance: none;
+    background: color-mix(in srgb, var(--color-ink) 16%, transparent);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .chill-volume__slider::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--color-bloom);
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(18, 24, 32, 0.2);
+    cursor: pointer;
+  }
+
+  .chill-volume__slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--color-bloom);
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(18, 24, 32, 0.2);
+    cursor: pointer;
+  }
+
+  .chill-volume__slider:focus-visible {
+    outline: 2px solid var(--color-bloom);
+    outline-offset: 3px;
+  }
+
+  .vibe-mode-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.7rem 1.05rem;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 999px;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.55) 0%,
+      rgba(232, 238, 242, 0.35) 50%,
+      rgba(255, 255, 255, 0.25) 100%
+    );
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    backdrop-filter: blur(14px) saturate(1.35);
+    -webkit-backdrop-filter: blur(14px) saturate(1.35);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.65) inset,
+      0 8px 24px rgba(18, 24, 32, 0.08);
+    transition:
+      background 0.25s ease,
+      border-color 0.25s ease,
+      color 0.25s ease,
+      box-shadow 0.25s ease,
+      transform 0.2s ease;
+  }
+
+  .vibe-mode-btn:hover {
+    border-color: color-mix(in srgb, var(--color-bloom) 45%, white);
+    color: var(--color-bloom-deep);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.75) inset,
+      0 10px 28px rgba(27, 122, 78, 0.12);
+  }
+
+  .vibe-mode-btn:focus-visible {
+    outline: 2px solid var(--color-bloom);
+    outline-offset: 3px;
+  }
+
+  .vibe-mode-btn:active {
+    transform: scale(0.97);
+  }
+
+  .vibe-mode-btn[aria-pressed="true"] {
+    border-color: color-mix(in srgb, var(--color-bloom) 50%, white);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-bloom) 22%, white) 0%,
+      rgba(255, 255, 255, 0.4) 100%
+    );
+    color: var(--color-bloom-deep);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.7) inset,
+      0 0 0 1px color-mix(in srgb, var(--color-bloom) 18%, transparent),
+      0 10px 28px rgba(27, 122, 78, 0.16);
+  }
+
+  .vibe-mode-btn__icon {
+    display: inline-flex;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .vibe-mode-btn__label {
+    line-height: 1;
+  }
+
+  @media (max-width: 480px) {
+    .chill-volume__slider {
+      width: 72px;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    const btn = document.getElementById("vibe-mode-btn") as HTMLButtonElement | null;
+    const audio = document.getElementById("chill-audio") as HTMLAudioElement | null;
+    const controls = document.getElementById("chill-controls") as HTMLElement | null;
+    const volumePanel = document.getElementById("chill-volume") as HTMLElement | null;
+    const volumeSlider = document.getElementById("chill-volume-slider") as HTMLInputElement | null;
+    const muteBtn = document.getElementById("chill-mute-btn") as HTMLButtonElement | null;
+    if (!btn || !audio || !controls || !volumePanel || !volumeSlider || !muteBtn) return;
+
+    const DEFAULT_VOLUME = 0.7;
+    // Skip the quiet intro — HTMLAudioElement.currentTime is seconds
+    const START_AT = 13;
+    let isPlaying = false;
+    let lastVolume = DEFAULT_VOLUME;
+
+    audio.volume = DEFAULT_VOLUME;
+
+    function jumpToStart() {
+      // Seek only works once metadata is ready enough
+      try {
+        audio!.currentTime = START_AT;
+      } catch {
+        /* ignore until canplay */
+      }
+    }
+
+    function syncMuteIcons(muted: boolean) {
+      const vol = muteBtn!.querySelector("[data-icon-volume]") as HTMLElement | null;
+      const mutedIcon = muteBtn!.querySelector("[data-icon-muted]") as HTMLElement | null;
+      if (vol && mutedIcon) {
+        vol.hidden = muted;
+        mutedIcon.hidden = !muted;
+      }
+      muteBtn!.setAttribute("aria-label", muted ? "Unmute" : "Mute");
+      muteBtn!.title = muted ? "Unmute" : "Mute";
+    }
+
+    function setVolume(value: number) {
+      const v = Math.min(1, Math.max(0, value));
+      audio!.volume = v;
+      audio!.muted = v === 0;
+      volumeSlider!.value = String(v);
+      volumeSlider!.setAttribute("aria-valuenow", String(Math.round(v * 100)));
+      if (v > 0) lastVolume = v;
+      syncMuteIcons(audio!.muted || v === 0);
+    }
+
+    function setPlaying(next: boolean) {
+      isPlaying = next;
+      btn!.setAttribute("aria-pressed", String(next));
+      btn!.setAttribute("aria-label", next ? "Pause Chill Mode" : "Play Chill Mode");
+      controls!.dataset.playing = String(next);
+      volumePanel!.hidden = !next;
+
+      const idle = btn!.querySelector("[data-idle]") as HTMLElement | null;
+      const active = btn!.querySelector("[data-active]") as HTMLElement | null;
+      const iconPlay = btn!.querySelector("[data-icon-play]") as HTMLElement | null;
+      const iconPause = btn!.querySelector("[data-icon-pause]") as HTMLElement | null;
+
+      if (idle && active) {
+        idle.hidden = next;
+        active.hidden = !next;
+      }
+      if (iconPlay && iconPause) {
+        iconPlay.hidden = next;
+        iconPause.hidden = !next;
+      }
+
+      if (next) {
+        // Fresh play (or resume from intro) → start at 10s
+        if (audio!.currentTime < START_AT) {
+          jumpToStart();
+        }
+        void audio!.play().catch(() => {
+          isPlaying = false;
+          btn!.setAttribute("aria-pressed", "false");
+          btn!.setAttribute("aria-label", "Play Chill Mode");
+          controls!.dataset.playing = "false";
+          volumePanel!.hidden = true;
+          if (idle && active) {
+            idle.hidden = false;
+            active.hidden = true;
+          }
+          if (iconPlay && iconPause) {
+            iconPlay.hidden = false;
+            iconPause.hidden = true;
+          }
+        });
+      } else {
+        audio!.pause();
+      }
+    }
+
+    btn.addEventListener("click", () => {
+      setPlaying(!isPlaying);
+    });
+
+    volumeSlider.addEventListener("input", () => {
+      setVolume(Number(volumeSlider!.value));
+    });
+
+    muteBtn.addEventListener("click", () => {
+      if (audio!.muted || audio!.volume === 0) {
+        setVolume(lastVolume > 0 ? lastVolume : DEFAULT_VOLUME);
+      } else {
+        lastVolume = audio!.volume > 0 ? audio!.volume : lastVolume;
+        setVolume(0);
+      }
+    });
+
+    // Manual loop from 10s (HTML loop would restart at 0)
+    audio.addEventListener("ended", () => {
+      if (!isPlaying) return;
+      jumpToStart();
+      void audio!.play();
+    });
+
+    setVolume(DEFAULT_VOLUME);
+  })();
+</script>
