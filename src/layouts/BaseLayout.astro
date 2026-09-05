@@ -1,15 +1,18 @@
 ---
 import "../styles/global.css";
 import ChillButton from "../components/ChillButton.astro";
+import { site } from "../data/site";
 
 interface Props {
   title?: string;
   description?: string;
+  showChill?: boolean;
 }
 
 const {
-  title = "Bishal Lamsal Portfolio",
-  description = "Portfolio of Bishal Lamsal — Computer Science student and software developer building with JavaScript, Python, and Java.",
+  title = site.pageTitle || "Bishal Lamsal Portfolio",
+  description = `Portfolio of ${site.name} — ${site.role}.`,
+  showChill = true,
 } = Astro.props;
 ---
 
@@ -17,11 +20,10 @@ const {
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <!-- Favicons: files live in /public and are served from site root (/) -->
     <link rel="icon" href="/favicon.ico?v=3" sizes="32x32" />
     <link rel="icon" type="image/png" href="/favicon.png?v=3" sizes="48x48" />
     <link rel="shortcut icon" href="/favicon.ico?v=3" />
-    <link rel="apple-touch-icon" href="/images/headshot.jpg" />
+    <link rel="apple-touch-icon" href={site.headshot || "/favicon.png"} />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
@@ -35,9 +37,23 @@ const {
     <title>{title}</title>
   </head>
   <body class="antialiased">
-    <ChillButton />
+    {showChill && <ChillButton />}
     <slot />
     <script>
+      import {
+        applyTheme,
+        loadRuntimeConfig,
+      } from "../lib/config-client";
+
+      // Apply saved / fetched theme colors (admin overrides)
+      loadRuntimeConfig()
+        .then((config) => {
+          applyTheme(config.theme);
+        })
+        .catch(() => {
+          /* keep CSS defaults */
+        });
+
       const observer = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {

@@ -1,0 +1,51 @@
+{
+  "site": {
+    "name": "Bishal Lamsal",
+    "role": "Computer Science Student",
+    "tagline": "Building with JavaScript, Python, and Java — from campus competitions to tools people can use.",
+    "stack": ["JavaScript", "Python", "Java"],
+    "headshot": "/images/headshot.jpg",
+    "email": "mailto:bishal@example.com",
+    "github": "#",
+    "linkedin": "#",
+    "pageTitle": "Bishal Lamsal Portfolio"
+  },
+  "theme": {
+    "ink": "#121820",
+    "inkMuted": "#3d4a57",
+    "mist": "#e8eef2",
+    "mistWarm": "#f4f7f5",
+    "bloom": "#1b7a4e",
+    "bloomDeep": "#145c3a",
+    "line": "#c5d0d8"
+  },
+  "projects": [
+    {
+      "title": "Bloom Scroll",
+      "description": "An AI-powered browser extension that filters unwanted content from social media feeds, so you see more of what matters and less of the noise.",
+      "tags": ["JavaScript", "Browser Extension", "AI"],
+      "award": "2nd place — campus innovation competition",
+      "link": "#",
+      "repo": "#"
+    },
+    {
+      "title": "Password Strength Evaluator",
+      "description": "A co-developed tool that analyzes password strength against known data-breach vulnerability patterns to help people choose safer credentials.",
+      "tags": ["Python", "Security", "Data Analysis"],
+      "link": "#",
+      "repo": "#"
+    }
+  ],
+  "experience": [
+    {
+      "role": "Public Relations Officer",
+      "org": "Student organization",
+      "detail": "Led outreach and communications for campus events, bridging student voices with the wider community."
+    },
+    {
+      "role": "Graphic Designer",
+      "org": "Campus laboratory school",
+      "detail": "Designed visual materials for school programs, translating ideas into clear, memorable graphics."
+    }
+  ]
+}
