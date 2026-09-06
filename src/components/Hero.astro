@@ -8,13 +8,24 @@ import { site } from "../data/site";
 >
   <div class="mx-auto w-full max-w-5xl px-6 md:px-8">
     {
-      site.headshot && (
+      site.headshot ? (
         <img
+          data-content="hero-headshot"
           src={site.headshot}
           alt={`${site.name} headshot`}
           width="112"
           height="112"
           class="animate-hero-rise h-24 w-24 rounded-full object-cover shadow-[0_8px_28px_rgba(18,24,32,0.14)] ring-2 ring-white/80 md:h-28 md:w-28"
+        />
+      ) : (
+        <img
+          data-content="hero-headshot"
+          src=""
+          alt=""
+          width="112"
+          height="112"
+          class="animate-hero-rise h-24 w-24 rounded-full object-cover shadow-[0_8px_28px_rgba(18,24,32,0.14)] ring-2 ring-white/80 md:h-28 md:w-28"
+          hidden
         />
       )
     }
@@ -24,16 +35,19 @@ import { site } from "../data/site";
       Portfolio
     </p>
     <h1
+      data-content="hero-name"
       class="animate-hero-rise animate-hero-rise-delay-1 mt-4 font-display text-[clamp(2.75rem,10vw,5.75rem)] font-extrabold leading-[0.95] tracking-tight text-ink"
     >
       {site.name}
     </h1>
     <p
+      data-content="hero-role"
       class="animate-hero-rise animate-hero-rise-delay-2 mt-5 max-w-xl font-display text-xl font-semibold text-ink md:text-2xl"
     >
       {site.role}
     </p>
     <p
+      data-content="hero-tagline"
       class="animate-hero-rise animate-hero-rise-delay-2 mt-3 max-w-lg text-base leading-relaxed text-ink-muted md:text-lg"
     >
       {site.tagline}

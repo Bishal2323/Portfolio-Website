@@ -20,7 +20,7 @@ import { projects } from "../data/projects";
       </p>
     </div>
 
-    <ul class="mt-14 divide-y divide-line/70">
+    <ul data-content="projects-list" class="mt-14 divide-y divide-line/70">
       {
         projects.map((project, index) => (
           <li class={`project-item reveal py-10 md:py-12`} style={`transition-delay: ${index * 80}ms`}>
@@ -33,6 +33,8 @@ import { projects } from "../data/projects";
                   {project.link && project.link !== "#" ? (
                     <a
                       href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       class="project-link focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bloom"
                     >
                       <span class="project-title">{project.title}</span>
@@ -59,6 +61,8 @@ import { projects } from "../data/projects";
                     {project.link && project.link !== "#" && (
                       <a
                         href={project.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         class="text-bloom transition-colors hover:text-bloom-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bloom"
                       >
                         Live demo
@@ -67,6 +71,8 @@ import { projects } from "../data/projects";
                     {project.repo && project.repo !== "#" && (
                       <a
                         href={project.repo}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         class="text-ink transition-colors hover:text-bloom focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bloom"
                       >
                         Source

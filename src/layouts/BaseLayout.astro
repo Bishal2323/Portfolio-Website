@@ -40,19 +40,30 @@ const {
     {showChill && <ChillButton />}
     <slot />
     <script>
-      import {
-        applyTheme,
-        loadRuntimeConfig,
-      } from "../lib/config-client";
+      import { applyTheme, loadRuntimeConfig } from "../lib/config-client";
+      import { applySiteContent } from "../lib/apply-site-content";
 
-      // Apply saved / fetched theme colors (admin overrides)
+      // Apply admin-saved config (localStorage) or public/site-config.json
       loadRuntimeConfig()
         .then((config) => {
           applyTheme(config.theme);
+          applySiteContent(config);
         })
         .catch(() => {
-          /* keep CSS defaults */
+          /* keep build-time HTML defaults */
         });
+
+      // If admin saves in another tab, refresh this page's content
+      window.addEventListener("storage", (event) => {
+        if (event.key !== "portfolio-site-config" || !event.newValue) return;
+        try {
+          const config = JSON.parse(event.newValue);
+          applyTheme(config.theme);
+          applySiteContent(config);
+        } catch {
+          /* ignore bad JSON */
+        }
+      });
 
       const observer = new IntersectionObserver(
         (entries) => {

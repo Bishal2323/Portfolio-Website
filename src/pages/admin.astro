@@ -9,13 +9,12 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
   <main class="admin-page">
     <script type="application/json" id="boot-config" is:inline set:html={JSON.stringify(siteConfig)}></script>
 
+    <!-- LOGIN -->
     <div id="login-gate" class="admin-gate">
-      <div class="admin-card">
+      <div class="admin-card admin-card--login">
         <p class="admin-eyebrow">Private</p>
         <h1 class="admin-title">Admin access</h1>
-        <p class="admin-copy">
-          Enter your password to edit site content, colors, and projects.
-        </p>
+        <p class="admin-copy">Edit colors, projects, links, and your headshot from one place.</p>
         <form id="login-form" class="admin-form" data-admin-password={adminPassword}>
           <label class="admin-label" for="admin-password">Password</label>
           <input
@@ -26,33 +25,37 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
             autocomplete="current-password"
             required
           />
-          <p id="login-error" class="admin-error" hidden>Wrong password. Check .env and restart the dev server.</p>
-          <button type="submit" class="admin-btn admin-btn--primary">Unlock</button>
+          <p id="login-error" class="admin-error" hidden>
+            Wrong password. Check <code>.env</code> and restart <code>npm run dev</code>.
+          </p>
+          <button type="submit" class="admin-btn admin-btn--primary admin-btn--block">Unlock</button>
         </form>
-        <p class="admin-hint">
-          Password comes from <code>PUBLIC_ADMIN_PASSWORD</code> in your <code>.env</code> file.
-          After changing it, restart <code>npm run dev</code>.
-        </p>
       </div>
     </div>
 
+    <!-- APP -->
     <div id="admin-app" class="admin-app" hidden>
-      <header class="admin-top">
-        <div>
+      <header class="admin-topbar">
+        <div class="admin-topbar__brand">
           <p class="admin-eyebrow">Dashboard</p>
-          <h1 class="admin-title">Edit portfolio</h1>
+          <h1 class="admin-title admin-title--sm">Portfolio admin</h1>
         </div>
-        <div class="admin-top-actions">
-          <a class="admin-btn admin-btn--ghost" href="/">View site</a>
-          <button type="button" id="btn-logout" class="admin-btn admin-btn--ghost">
-            Log out
+        <div class="admin-topbar__actions">
+          <button type="button" id="btn-undo" class="admin-btn admin-btn--ghost" title="Undo" disabled>
+            Undo
           </button>
+          <button type="button" id="btn-redo" class="admin-btn admin-btn--ghost" title="Redo" disabled>
+            Redo
+          </button>
+          <button type="button" id="btn-save" class="admin-btn admin-btn--primary">Save</button>
+          <a class="admin-btn admin-btn--ghost" href="/" target="_blank" rel="noopener">View site</a>
+          <button type="button" id="btn-logout" class="admin-btn admin-btn--ghost">Log out</button>
         </div>
       </header>
 
       <nav class="admin-tabs" aria-label="Admin sections">
         <button type="button" class="admin-tab is-active" data-tab="theme">Colors</button>
-        <button type="button" class="admin-tab" data-tab="site">Site info</button>
+        <button type="button" class="admin-tab" data-tab="site">Site & photo</button>
         <button type="button" class="admin-tab" data-tab="projects">Projects</button>
         <button type="button" class="admin-tab" data-tab="experience">Experience</button>
       </nav>
@@ -60,21 +63,44 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
       <p id="admin-status" class="admin-status" role="status" aria-live="polite"></p>
 
       <section class="admin-panel is-active" data-panel="theme">
-        <h2 class="admin-section-title">Theme colors</h2>
-        <p class="admin-copy">Changes preview live on this page. Save to keep them.</p>
+        <div class="admin-panel__intro">
+          <h2 class="admin-section-title">Theme colors</h2>
+          <p class="admin-copy">Click a swatch or type a hex — preview updates instantly.</p>
+        </div>
         <div class="admin-color-grid" id="theme-fields"></div>
+        <div class="admin-theme-preview" aria-hidden="true">
+          <span class="preview-chip preview-chip--ink">Text</span>
+          <span class="preview-chip preview-chip--bloom">Accent</span>
+          <span class="preview-chip preview-chip--muted">Muted</span>
+        </div>
       </section>
 
       <section class="admin-panel" data-panel="site">
-        <h2 class="admin-section-title">Site info</h2>
-        <div class="admin-fields" id="site-fields"></div>
+        <div class="admin-panel__intro">
+          <h2 class="admin-section-title">Site info & headshot</h2>
+          <p class="admin-copy">Upload a photo or paste a path. Social links use the hyperlink row below.</p>
+        </div>
+        <div class="admin-site-layout">
+          <div class="admin-upload" id="headshot-upload">
+            <img id="headshot-preview" class="admin-upload__preview" alt="Headshot preview" hidden />
+            <div class="admin-upload__empty" id="headshot-empty">
+              <p class="admin-upload__title">Drop photo here</p>
+              <p class="admin-copy">or click to choose a file (JPG / PNG)</p>
+            </div>
+            <input id="headshot-file" type="file" accept="image/*" class="admin-upload__input" />
+          </div>
+          <div class="admin-fields" id="site-fields"></div>
+        </div>
       </section>
 
       <section class="admin-panel" data-panel="projects">
         <div class="admin-section-head">
-          <h2 class="admin-section-title">Projects</h2>
-          <button type="button" id="btn-add-project" class="admin-btn admin-btn--ghost">
-            Add project
+          <div>
+            <h2 class="admin-section-title">Projects</h2>
+            <p class="admin-copy">Use the link rows to paste Live / GitHub URLs, then Open to test.</p>
+          </div>
+          <button type="button" id="btn-add-project" class="admin-btn admin-btn--primary">
+            + Add project
           </button>
         </div>
         <div id="projects-list" class="admin-list"></div>
@@ -84,18 +110,15 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
         <div class="admin-section-head">
           <h2 class="admin-section-title">Experience</h2>
           <button type="button" id="btn-add-experience" class="admin-btn admin-btn--ghost">
-            Add role
+            + Add role
           </button>
         </div>
         <div id="experience-list" class="admin-list"></div>
       </section>
 
       <footer class="admin-footer">
-        <button type="button" id="btn-save" class="admin-btn admin-btn--primary">
-          Save changes
-        </button>
         <button type="button" id="btn-download" class="admin-btn admin-btn--ghost">
-          Download site-config.json
+          Download config JSON
         </button>
         <button type="button" id="btn-reset" class="admin-btn admin-btn--ghost">
           Reset to file defaults
@@ -103,11 +126,9 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
       </footer>
 
       <aside class="admin-note">
-        <strong>How saving works:</strong> Save stores edits in this browser and applies
-        colors immediately. For permanent updates on the live site, click
-        <em>Download site-config.json</em>, replace
-        <code>public/site-config.json</code> (and
-        <code>src/data/site-config.json</code>), then rebuild / redeploy.
+        <strong>Tip:</strong> <em>Save</em> keeps edits in this browser. For a permanent live-site update,
+        download the JSON and replace <code>public/site-config.json</code> +
+        <code>src/data/site-config.json</code>, then rebuild.
       </aside>
     </div>
   </main>
@@ -132,17 +153,7 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
     line: "Line / borders",
   };
 
-  const SITE_FIELDS = [
-    ["name", "Name"],
-    ["role", "Role"],
-    ["tagline", "Tagline"],
-    ["stack", "Tech stack (comma-separated)"],
-    ["headshot", "Headshot path"],
-    ["email", "Email (mailto:...)"],
-    ["github", "GitHub URL"],
-    ["linkedin", "LinkedIn URL"],
-    ["pageTitle", "Browser tab title"],
-  ];
+  const MAX_HISTORY = 40;
 
   function readBootConfig() {
     const el = document.getElementById("boot-config");
@@ -154,12 +165,23 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
     }
   }
 
+  function clone(value) {
+    return JSON.parse(JSON.stringify(value));
+  }
+
   /** @type {any} */
   let config = readBootConfig();
+  /** @type {any[]} */
+  let history = [];
+  let historyIndex = -1;
+  let applyingHistory = false;
+
   const gate = document.getElementById("login-gate");
   const app = document.getElementById("admin-app");
   const statusEl = document.getElementById("admin-status");
   const loginForm = document.getElementById("login-form");
+  const btnUndo = document.getElementById("btn-undo");
+  const btnRedo = document.getElementById("btn-redo");
 
   function setStatus(msg, isError = false) {
     if (!statusEl) return;
@@ -192,6 +214,80 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
     return escapeHtml(str).replaceAll('"', "&quot;");
   }
 
+  function updateHistoryButtons() {
+    if (btnUndo) btnUndo.disabled = historyIndex <= 0;
+    if (btnRedo) btnRedo.disabled = historyIndex < 0 || historyIndex >= history.length - 1;
+  }
+
+  function pushHistory() {
+    if (applyingHistory || !config) return;
+    const snapshot = clone(config);
+    history = history.slice(0, historyIndex + 1);
+    history.push(snapshot);
+    if (history.length > MAX_HISTORY) history.shift();
+    historyIndex = history.length - 1;
+    updateHistoryButtons();
+  }
+
+  function restoreHistory(index) {
+    if (index < 0 || index >= history.length) return;
+    applyingHistory = true;
+    historyIndex = index;
+    config = clone(history[index]);
+    renderAll({ skipHistory: true });
+    applyingHistory = false;
+    updateHistoryButtons();
+    setStatus(index < history.length - 1 ? "Redid change." : "Undid change.");
+  }
+
+  function linkRow(label, index, key, value) {
+    const safe = escapeAttr(value || "");
+    return `
+      <div class="link-row">
+        <span class="admin-label">${label}</span>
+        <div class="link-row__controls">
+          <span class="link-row__icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 13a5 5 0 0 0 7.54.54l1.92-1.92a5 5 0 0 0-7.07-7.07L10.7 6.24"/>
+              <path d="M14 11a5 5 0 0 0-7.54-.54L4.54 12.4a5 5 0 0 0 7.07 7.07l1.69-1.69"/>
+            </svg>
+          </span>
+          <input
+            class="admin-input link-row__input"
+            type="url"
+            placeholder="https://..."
+            data-p="${index}"
+            data-k="${key}"
+            value="${safe}"
+          />
+          <button type="button" class="admin-btn admin-btn--ghost admin-btn--icon" data-open-link data-p="${index}" data-k="${key}" title="Open link">
+            Open
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  function socialLinkRow(label, key, value) {
+    return `
+      <div class="link-row">
+        <span class="admin-label">${label}</span>
+        <div class="link-row__controls">
+          <span class="link-row__icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 13a5 5 0 0 0 7.54.54l1.92-1.92a5 5 0 0 0-7.07-7.07L10.7 6.24"/>
+              <path d="M14 11a5 5 0 0 0-7.54-.54L4.54 12.4a5 5 0 0 0 7.07 7.07l1.69-1.69"/>
+            </svg>
+          </span>
+          <input class="admin-input link-row__input" type="text" data-site="${key}" value="${escapeAttr(value || "")}" placeholder="https://... or mailto:..." />
+          <button type="button" class="admin-btn admin-btn--ghost admin-btn--icon" data-open-site-link data-k="${key}" title="Open link">
+            Open
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
   function renderTheme() {
     const wrap = document.getElementById("theme-fields");
     if (!wrap || !config?.theme) return;
@@ -201,7 +297,7 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
       const row = document.createElement("label");
       row.className = "admin-color-row";
       row.innerHTML = `
-        <span>${label}</span>
+        <span class="admin-color-row__label">${label}</span>
         <span class="admin-color-controls">
           <input type="color" data-theme="${key}" value="${toHex(value)}" />
           <input type="text" class="admin-input admin-input--sm" data-theme-text="${key}" value="${escapeAttr(value)}" />
@@ -209,6 +305,12 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
       `;
       wrap.appendChild(row);
     }
+
+    const onThemeEdit = () => {
+      pushHistory();
+      applyTheme(config.theme);
+    };
+
     wrap.querySelectorAll("[data-theme]").forEach((input) => {
       input.addEventListener("input", () => {
         const key = input.getAttribute("data-theme");
@@ -217,6 +319,7 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
         if (text) text.value = input.value;
         applyTheme(config.theme);
       });
+      input.addEventListener("change", onThemeEdit);
     });
     wrap.querySelectorAll("[data-theme-text]").forEach((input) => {
       input.addEventListener("change", () => {
@@ -224,43 +327,114 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
         config.theme[key] = input.value;
         const color = wrap.querySelector(`[data-theme="${key}"]`);
         if (color) color.value = toHex(input.value);
-        applyTheme(config.theme);
+        onThemeEdit();
       });
     });
+  }
+
+  function updateHeadshotPreview() {
+    const img = document.getElementById("headshot-preview");
+    const empty = document.getElementById("headshot-empty");
+    const src = config?.site?.headshot || "";
+    if (img && empty) {
+      if (src) {
+        img.src = src;
+        img.hidden = false;
+        empty.hidden = true;
+      } else {
+        img.hidden = true;
+        empty.hidden = false;
+      }
+    }
   }
 
   function renderSite() {
     const wrap = document.getElementById("site-fields");
     if (!wrap || !config?.site) return;
-    wrap.innerHTML = "";
-    for (const [key, label] of SITE_FIELDS) {
-      const raw = config.site[key];
-      const value = Array.isArray(raw) ? raw.join(", ") : raw || "";
-      const isLong = key === "tagline";
-      const field = document.createElement("label");
-      field.className = "admin-field";
-      field.innerHTML = `
-        <span class="admin-label">${label}</span>
-        ${
-          isLong
-            ? `<textarea class="admin-input admin-textarea" data-site="${key}" rows="3">${escapeHtml(value)}</textarea>`
-            : `<input class="admin-input" data-site="${key}" type="text" value="${escapeAttr(value)}" />`
-        }
-      `;
-      wrap.appendChild(field);
-    }
+    const s = config.site;
+    wrap.innerHTML = `
+      <label class="admin-field"><span class="admin-label">Name</span>
+        <input class="admin-input" data-site="name" type="text" value="${escapeAttr(s.name || "")}" /></label>
+      <label class="admin-field"><span class="admin-label">Role</span>
+        <input class="admin-input" data-site="role" type="text" value="${escapeAttr(s.role || "")}" /></label>
+      <label class="admin-field"><span class="admin-label">Tagline</span>
+        <textarea class="admin-input admin-textarea" data-site="tagline" rows="3">${escapeHtml(s.tagline || "")}</textarea></label>
+      <label class="admin-field"><span class="admin-label">Tech stack (comma-separated)</span>
+        <input class="admin-input" data-site="stack" type="text" value="${escapeAttr((s.stack || []).join(", "))}" /></label>
+      <label class="admin-field"><span class="admin-label">Headshot path (or upload on the left)</span>
+        <input class="admin-input" data-site="headshot" type="text" value="${escapeAttr(s.headshot || "")}" /></label>
+      <label class="admin-field"><span class="admin-label">Browser tab title</span>
+        <input class="admin-input" data-site="pageTitle" type="text" value="${escapeAttr(s.pageTitle || "")}" /></label>
+      ${socialLinkRow("Email", "email", s.email)}
+      ${socialLinkRow("GitHub", "github", s.github)}
+      ${socialLinkRow("LinkedIn", "linkedin", s.linkedin)}
+    `;
+
+    updateHeadshotPreview();
+
     wrap.querySelectorAll("[data-site]").forEach((input) => {
-      input.addEventListener("input", () => {
+      const commit = () => {
         const key = input.getAttribute("data-site");
         const val = input.value;
         if (key === "stack") {
-          config.site.stack = val
-            .split(",")
-            .map((s) => s.trim())
-            .filter(Boolean);
+          config.site.stack = val.split(",").map((x) => x.trim()).filter(Boolean);
         } else {
           config.site[key] = val;
         }
+        if (key === "headshot") updateHeadshotPreview();
+        pushHistory();
+      };
+      input.addEventListener("change", commit);
+      if (input.getAttribute("data-site") === "headshot") {
+        input.addEventListener("input", () => {
+          config.site.headshot = input.value;
+          updateHeadshotPreview();
+        });
+      }
+    });
+
+    wrap.querySelectorAll("[data-open-site-link]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const key = btn.getAttribute("data-k");
+        const href = config.site[key];
+        if (href && href !== "#") window.open(href, "_blank", "noopener");
+        else setStatus("Add a URL first.", true);
+      });
+    });
+  }
+
+  function bindProjectCard(wrap) {
+    wrap.querySelectorAll("[data-p]").forEach((input) => {
+      if (input.tagName === "BUTTON") return;
+      const commit = () => {
+        const i = Number(input.getAttribute("data-p"));
+        const k = input.getAttribute("data-k");
+        if (k === "tags") {
+          config.projects[i].tags = input.value.split(",").map((s) => s.trim()).filter(Boolean);
+        } else {
+          config.projects[i][k] = input.value;
+        }
+        pushHistory();
+      };
+      input.addEventListener("change", commit);
+    });
+
+    wrap.querySelectorAll("[data-remove-project]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const i = Number(btn.getAttribute("data-remove-project"));
+        config.projects.splice(i, 1);
+        pushHistory();
+        renderProjects();
+      });
+    });
+
+    wrap.querySelectorAll("[data-open-link]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const i = Number(btn.getAttribute("data-p"));
+        const k = btn.getAttribute("data-k");
+        const href = config.projects[i]?.[k];
+        if (href && href !== "#") window.open(href, "_blank", "noopener");
+        else setStatus("Paste a full URL (https://...) first.", true);
       });
     });
   }
@@ -274,7 +448,7 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
       card.className = "admin-item";
       card.innerHTML = `
         <div class="admin-item-head">
-          <h3>Project ${index + 1}</h3>
+          <h3>${escapeHtml(project.title || `Project ${index + 1}`)}</h3>
           <button type="button" class="admin-btn admin-btn--danger" data-remove-project="${index}">Remove</button>
         </div>
         <label class="admin-field"><span class="admin-label">Title</span>
@@ -285,38 +459,12 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
           <input class="admin-input" data-p="${index}" data-k="tags" value="${escapeAttr((project.tags || []).join(", "))}" /></label>
         <label class="admin-field"><span class="admin-label">Award (optional)</span>
           <input class="admin-input" data-p="${index}" data-k="award" value="${escapeAttr(project.award || "")}" /></label>
-        <div class="admin-row-2">
-          <label class="admin-field"><span class="admin-label">Live link</span>
-            <input class="admin-input" data-p="${index}" data-k="link" value="${escapeAttr(project.link || "")}" /></label>
-          <label class="admin-field"><span class="admin-label">Repo link</span>
-            <input class="admin-input" data-p="${index}" data-k="repo" value="${escapeAttr(project.repo || "")}" /></label>
-        </div>
+        ${linkRow("Live demo link", index, "link", project.link)}
+        ${linkRow("GitHub / source link", index, "repo", project.repo)}
       `;
       wrap.appendChild(card);
     });
-
-    wrap.querySelectorAll("[data-p]").forEach((input) => {
-      input.addEventListener("input", () => {
-        const i = Number(input.getAttribute("data-p"));
-        const k = input.getAttribute("data-k");
-        if (k === "tags") {
-          config.projects[i].tags = input.value
-            .split(",")
-            .map((s) => s.trim())
-            .filter(Boolean);
-        } else {
-          config.projects[i][k] = input.value;
-        }
-      });
-    });
-
-    wrap.querySelectorAll("[data-remove-project]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const i = Number(btn.getAttribute("data-remove-project"));
-        config.projects.splice(i, 1);
-        renderProjects();
-      });
-    });
+    bindProjectCard(wrap);
   }
 
   function renderExperience() {
@@ -328,7 +476,7 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
       card.className = "admin-item";
       card.innerHTML = `
         <div class="admin-item-head">
-          <h3>Role ${index + 1}</h3>
+          <h3>${escapeHtml(item.role || `Role ${index + 1}`)}</h3>
           <button type="button" class="admin-btn admin-btn--danger" data-remove-exp="${index}">Remove</button>
         </div>
         <label class="admin-field"><span class="admin-label">Role</span>
@@ -342,23 +490,24 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
     });
 
     wrap.querySelectorAll("[data-e]").forEach((input) => {
-      input.addEventListener("input", () => {
+      input.addEventListener("change", () => {
         const i = Number(input.getAttribute("data-e"));
         const k = input.getAttribute("data-k");
         config.experience[i][k] = input.value;
+        pushHistory();
       });
     });
-
     wrap.querySelectorAll("[data-remove-exp]").forEach((btn) => {
       btn.addEventListener("click", () => {
         const i = Number(btn.getAttribute("data-remove-exp"));
         config.experience.splice(i, 1);
+        pushHistory();
         renderExperience();
       });
     });
   }
 
-  function renderAll() {
+  function renderAll(opts = {}) {
     if (!config) {
       setStatus("Could not load site config.", true);
       return;
@@ -368,6 +517,53 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
     renderProjects();
     renderExperience();
     applyTheme(config.theme);
+    if (!opts.skipHistory && history.length === 0) {
+      history = [clone(config)];
+      historyIndex = 0;
+      updateHistoryButtons();
+    }
+  }
+
+  function setupHeadshotUpload() {
+    const zone = document.getElementById("headshot-upload");
+    const fileInput = document.getElementById("headshot-file");
+    if (!zone || !fileInput) return;
+
+    const handleFile = (file) => {
+      if (!file || !file.type.startsWith("image/")) {
+        setStatus("Please choose an image file.", true);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        config.site.headshot = String(reader.result || "");
+        updateHeadshotPreview();
+        const pathInput = document.querySelector('[data-site="headshot"]');
+        if (pathInput) pathInput.value = "(uploaded image — saved in browser)";
+        pushHistory();
+        setStatus(
+          "Photo uploaded for preview in this browser. For the live site, also put the file in public/images/headshot.jpg.",
+        );
+      };
+      reader.readAsDataURL(file);
+    };
+
+    zone.addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", () => {
+      const file = fileInput.files?.[0];
+      if (file) handleFile(file);
+    });
+    zone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      zone.classList.add("is-dragover");
+    });
+    zone.addEventListener("dragleave", () => zone.classList.remove("is-dragover"));
+    zone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      zone.classList.remove("is-dragover");
+      const file = e.dataTransfer?.files?.[0];
+      if (file) handleFile(file);
+    });
   }
 
   async function unlock() {
@@ -377,8 +573,11 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
     } catch {
       config = config || readBootConfig();
     }
+    history = [];
+    historyIndex = -1;
     renderAll();
-    setStatus("Unlocked. Edit and save when ready.");
+    setupHeadshotUpload();
+    setStatus("Unlocked. Use Undo / Redo anytime while editing.");
   }
 
   async function boot() {
@@ -387,11 +586,8 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
     } catch {
       config = readBootConfig();
     }
-    if (isAuthed()) {
-      await unlock();
-    } else {
-      showApp(false);
-    }
+    if (isAuthed()) await unlock();
+    else showApp(false);
   }
 
   loginForm?.addEventListener("submit", (e) => {
@@ -404,8 +600,8 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
       sessionStorage.setItem(ADMIN_SESSION_KEY, "1");
       if (err) err.hidden = true;
       void unlock();
-    } else {
-      if (err) err.hidden = false;
+    } else if (err) {
+      err.hidden = false;
     }
   });
 
@@ -413,6 +609,9 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
     sessionStorage.removeItem(ADMIN_SESSION_KEY);
     showApp(false);
   });
+
+  btnUndo?.addEventListener("click", () => restoreHistory(historyIndex - 1));
+  btnRedo?.addEventListener("click", () => restoreHistory(historyIndex + 1));
 
   document.querySelectorAll(".admin-tab").forEach((tab) => {
     tab.addEventListener("click", () => {
@@ -430,140 +629,180 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
       description: "",
       tags: [],
       award: "",
-      link: "#",
-      repo: "#",
+      link: "",
+      repo: "",
     });
+    pushHistory();
     renderProjects();
+    setStatus("Project added — paste your Live / GitHub links in the hyperlink rows.");
   });
 
   document.getElementById("btn-add-experience")?.addEventListener("click", () => {
-    config.experience.push({
-      role: "New role",
-      org: "",
-      detail: "",
-    });
+    config.experience.push({ role: "New role", org: "", detail: "" });
+    pushHistory();
     renderExperience();
   });
 
   document.getElementById("btn-save")?.addEventListener("click", () => {
     writeLocalConfig(config);
     applyTheme(config.theme);
-    setStatus(
-      "Saved in this browser. Colors apply site-wide here. Download JSON to make it permanent.",
-    );
+    setStatus("Saved! Open the homepage (or refresh it) — your edits should show there now.");
   });
 
   document.getElementById("btn-download")?.addEventListener("click", () => {
     downloadConfig(config);
-    setStatus(
-      "Downloaded site-config.json — replace public/site-config.json and src/data/site-config.json, then rebuild.",
-    );
+    setStatus("Downloaded site-config.json.");
   });
 
   document.getElementById("btn-reset")?.addEventListener("click", async () => {
     localStorage.removeItem(CONFIG_STORAGE_KEY);
     const res = await fetch("/site-config.json", { cache: "no-store" });
     config = await res.json();
+    history = [];
+    historyIndex = -1;
     renderAll();
     setStatus("Reset to public/site-config.json defaults.");
+  });
+
+  document.addEventListener("keydown", (e) => {
+    const mod = e.metaKey || e.ctrlKey;
+    if (!mod || app?.hidden) return;
+    if (e.key.toLowerCase() === "z" && !e.shiftKey) {
+      e.preventDefault();
+      restoreHistory(historyIndex - 1);
+    } else if (e.key.toLowerCase() === "z" && e.shiftKey) {
+      e.preventDefault();
+      restoreHistory(historyIndex + 1);
+    } else if (e.key.toLowerCase() === "y") {
+      e.preventDefault();
+      restoreHistory(historyIndex + 1);
+    }
   });
 
   void boot();
 </script>
 
-<style>
+<style is:global>
+  /* IMPORTANT: is:global so JS-rendered fields get styles (Astro scoping skips innerHTML nodes) */
   .admin-page {
+    --admin-radius: 1rem;
+    --admin-pad: 1.15rem;
     min-height: 100vh;
-    padding: 2rem 1.25rem 4rem;
+    padding: 1.25rem 1.25rem 4.5rem;
+    background:
+      radial-gradient(ellipse 80% 50% at 0% 0%, color-mix(in srgb, var(--color-bloom) 12%, transparent), transparent 55%),
+      radial-gradient(ellipse 70% 45% at 100% 10%, color-mix(in srgb, var(--color-mist) 80%, white), transparent 50%);
+  }
+
+  .admin-page * {
+    box-sizing: border-box;
   }
 
   .admin-gate {
-    min-height: 70vh;
+    min-height: 72vh;
     display: grid;
     place-items: center;
   }
 
-  .admin-card,
+  .admin-card--login,
   .admin-app {
-    width: min(920px, 100%);
+    width: min(980px, 100%);
     margin-inline: auto;
   }
 
-  .admin-card {
-    padding: 2rem;
-    border: 1px solid color-mix(in srgb, var(--color-line) 80%, transparent);
-    background: color-mix(in srgb, white 72%, var(--color-mist-warm));
-    backdrop-filter: blur(10px);
+  .admin-card--login {
+    padding: 2.1rem;
+    border: 1px solid color-mix(in srgb, var(--color-line) 75%, transparent);
+    background: color-mix(in srgb, white 86%, var(--color-mist-warm));
+    border-radius: var(--admin-radius);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.7) inset,
+      0 22px 60px rgba(18, 24, 32, 0.1);
   }
 
   .admin-eyebrow {
     margin: 0;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--color-bloom);
+    font-family: var(--font-body);
   }
 
   .admin-title {
-    margin: 0.5rem 0 0;
+    margin: 0.45rem 0 0;
     font-family: var(--font-display);
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-size: clamp(1.7rem, 4vw, 2.4rem);
     line-height: 1.1;
     color: var(--color-ink);
   }
 
-  .admin-copy,
-  .admin-hint,
-  .admin-note {
+  .admin-title--sm {
+    font-size: 1.4rem;
+  }
+
+  .admin-copy {
     color: var(--color-ink-muted);
-    line-height: 1.5;
-  }
-
-  .admin-hint,
-  .admin-note {
-    font-size: 0.9rem;
-  }
-
-  .admin-hint code,
-  .admin-note code {
-    font-size: 0.85em;
-    padding: 0.1em 0.35em;
-    background: color-mix(in srgb, var(--color-mist) 70%, white);
+    line-height: 1.55;
+    margin: 0.45rem 0 0;
+    font-size: 0.95rem;
   }
 
   .admin-form {
     display: grid;
-    gap: 0.65rem;
-    margin-top: 1.5rem;
+    gap: 0.75rem;
+    margin-top: 1.4rem;
+  }
+
+  .admin-field {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.4rem;
+    width: 100%;
   }
 
   .admin-label {
     display: block;
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-size: 0.78rem;
+    font-weight: 650;
     color: var(--color-ink);
-    margin-bottom: 0.35rem;
+    font-family: var(--font-display);
+    letter-spacing: 0.02em;
   }
 
   .admin-input,
   .admin-textarea {
+    display: block;
     width: 100%;
-    box-sizing: border-box;
+    max-width: 100%;
     border: 1px solid var(--color-line);
-    background: white;
+    background: #fff;
     color: var(--color-ink);
-    padding: 0.65rem 0.75rem;
+    padding: 0.75rem 0.9rem;
     font: inherit;
+    font-size: 0.95rem;
+    border-radius: 0.55rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .admin-input:focus,
+  .admin-textarea:focus {
+    outline: none;
+    border-color: var(--color-bloom);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-bloom) 22%, transparent);
   }
 
   .admin-input--sm {
     width: 7.5rem;
-    padding: 0.4rem 0.5rem;
+    padding: 0.45rem 0.55rem;
   }
 
   .admin-textarea {
     resize: vertical;
+    min-height: 5.5rem;
+    line-height: 1.45;
   }
 
   .admin-error {
@@ -578,25 +817,45 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
     justify-content: center;
     gap: 0.35rem;
     border: 1px solid var(--color-line);
-    background: white;
+    background: #fff;
     color: var(--color-ink);
     font-family: var(--font-display);
-    font-size: 0.8rem;
+    font-size: 0.74rem;
     font-weight: 650;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     text-decoration: none;
     padding: 0.7rem 1rem;
+    border-radius: 0.55rem;
     cursor: pointer;
+    transition: transform 0.12s ease, background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .admin-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  .admin-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
   }
 
   .admin-btn--primary {
     background: var(--color-bloom);
     border-color: var(--color-bloom);
-    color: white;
+    color: #fff;
   }
 
-  .admin-btn--ghost:hover {
+  .admin-btn--primary:hover:not(:disabled) {
+    background: var(--color-bloom-deep);
+    border-color: var(--color-bloom-deep);
+  }
+
+  .admin-btn--block {
+    width: 100%;
+  }
+
+  .admin-btn--ghost:hover:not(:disabled) {
     border-color: var(--color-bloom);
     color: var(--color-bloom-deep);
   }
@@ -607,47 +866,68 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
     background: #fff6f5;
   }
 
-  .admin-top {
+  .admin-btn--icon {
+    flex-shrink: 0;
+    padding-inline: 0.85rem;
+  }
+
+  .admin-topbar {
+    position: sticky;
+    top: 0.65rem;
+    z-index: 20;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: 0.85rem;
+    padding: 0.95rem 1.1rem;
+    margin-bottom: 1.1rem;
+    border: 1px solid color-mix(in srgb, var(--color-line) 70%, transparent);
+    background: color-mix(in srgb, white 88%, var(--color-mist-warm));
+    backdrop-filter: blur(14px) saturate(1.2);
+    border-radius: 0.9rem;
+    box-shadow: 0 12px 36px rgba(18, 24, 32, 0.08);
   }
 
-  .admin-top-actions {
+  .admin-topbar__actions {
     display: flex;
-    gap: 0.5rem;
-    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    align-items: center;
   }
 
   .admin-tabs {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: 0.45rem;
     margin-bottom: 1rem;
+    padding: 0.35rem;
+    background: color-mix(in srgb, white 70%, var(--color-mist));
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--color-line) 70%, transparent);
+    width: fit-content;
+    max-width: 100%;
   }
 
   .admin-tab {
-    border: 1px solid var(--color-line);
+    border: none;
     background: transparent;
     color: var(--color-ink-muted);
-    padding: 0.55rem 0.9rem;
+    padding: 0.55rem 1rem;
     font-family: var(--font-display);
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 650;
+    border-radius: 999px;
     cursor: pointer;
   }
 
   .admin-tab.is-active {
     background: var(--color-ink);
-    border-color: var(--color-ink);
-    color: white;
+    color: #fff;
   }
 
   .admin-status {
     min-height: 1.25rem;
-    margin: 0 0 1rem;
+    margin: 0 0 0.95rem;
     color: var(--color-bloom-deep);
     font-size: 0.92rem;
   }
@@ -658,14 +938,32 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
 
   .admin-panel {
     display: none;
-    padding: 1.25rem;
-    border: 1px solid var(--color-line);
-    background: color-mix(in srgb, white 78%, var(--color-mist-warm));
+    padding: 1.35rem;
+    border: 1px solid color-mix(in srgb, var(--color-line) 75%, transparent);
+    background: color-mix(in srgb, white 90%, var(--color-mist-warm));
     margin-bottom: 1rem;
+    border-radius: var(--admin-radius);
+    box-shadow: 0 10px 28px rgba(18, 24, 32, 0.04);
   }
 
   .admin-panel.is-active {
     display: block;
+    animation: admin-panel-in 0.28s ease;
+  }
+
+  @keyframes admin-panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .admin-panel__intro {
+    margin-bottom: 1.15rem;
   }
 
   .admin-section-title {
@@ -678,17 +976,16 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
   .admin-section-head {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.75rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.1rem;
   }
 
   .admin-color-grid,
   .admin-fields,
   .admin-list {
     display: grid;
-    gap: 0.85rem;
-    margin-top: 1rem;
+    gap: 0.95rem;
   }
 
   .admin-color-row {
@@ -696,61 +993,195 @@ const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || "change-me";
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
-    font-size: 0.92rem;
+    padding: 0.8rem 0.95rem;
+    border: 1px solid var(--color-line);
+    border-radius: 0.7rem;
+    background: #fff;
+  }
+
+  .admin-color-row__label {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 650;
     color: var(--color-ink);
   }
 
   .admin-color-controls {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.55rem;
   }
 
-  .admin-field {
-    display: block;
+  .admin-color-controls input[type="color"] {
+    width: 2.4rem;
+    height: 2.4rem;
+    padding: 0;
+    border: 1px solid var(--color-line);
+    border-radius: 0.45rem;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .admin-theme-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-top: 1.1rem;
+  }
+
+  .preview-chip {
+    padding: 0.5rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 650;
+    font-family: var(--font-display);
+  }
+
+  .preview-chip--ink {
+    background: var(--color-ink);
+    color: #fff;
+  }
+
+  .preview-chip--bloom {
+    background: var(--color-bloom);
+    color: #fff;
+  }
+
+  .preview-chip--muted {
+    background: var(--color-mist);
+    color: var(--color-ink-muted);
+  }
+
+  .admin-site-layout {
+    display: grid;
+    gap: 1.15rem;
+  }
+
+  @media (min-width: 800px) {
+    .admin-site-layout {
+      grid-template-columns: 240px minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+
+  .admin-upload {
+    position: relative;
+    min-height: 240px;
+    border: 1.5px dashed color-mix(in srgb, var(--color-bloom) 50%, var(--color-line));
+    border-radius: 1rem;
+    background:
+      linear-gradient(160deg, color-mix(in srgb, var(--color-mist) 70%, white), #fff);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    overflow: hidden;
+    transition: border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  }
+
+  .admin-upload.is-dragover,
+  .admin-upload:hover {
+    border-color: var(--color-bloom);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px color-mix(in srgb, var(--color-bloom) 12%, transparent);
+  }
+
+  .admin-upload__input {
+    display: none;
+  }
+
+  .admin-upload__preview {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+  }
+
+  .admin-upload__empty {
+    text-align: center;
+    padding: 1.1rem;
+    pointer-events: none;
+  }
+
+  .admin-upload__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-ink);
   }
 
   .admin-item {
     border: 1px solid var(--color-line);
-    padding: 1rem;
-    background: white;
+    padding: 1.15rem;
+    background: #fff;
     display: grid;
-    gap: 0.75rem;
+    gap: 0.9rem;
+    border-radius: 0.9rem;
+    box-shadow: 0 8px 22px rgba(18, 24, 32, 0.04);
   }
 
   .admin-item-head {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 0.75rem;
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-line) 70%, transparent);
   }
 
   .admin-item-head h3 {
     margin: 0;
     font-family: var(--font-display);
-    font-size: 1rem;
+    font-size: 1.08rem;
+    color: var(--color-ink);
   }
 
-  .admin-row-2 {
+  .link-row {
     display: grid;
-    gap: 0.75rem;
+    gap: 0.4rem;
+    padding: 0.75rem;
+    border-radius: 0.7rem;
+    background: color-mix(in srgb, var(--color-mist) 45%, white);
+    border: 1px solid color-mix(in srgb, var(--color-line) 80%, transparent);
   }
 
-  @media (min-width: 720px) {
-    .admin-row-2 {
-      grid-template-columns: 1fr 1fr;
-    }
+  .link-row__controls {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .link-row__icon {
+    display: inline-flex;
+    color: var(--color-bloom);
+    flex-shrink: 0;
+  }
+
+  .link-row__input {
+    flex: 1;
+    min-width: 0;
   }
 
   .admin-footer {
     display: flex;
     flex-wrap: wrap;
     gap: 0.55rem;
-    margin: 1rem 0;
+    margin: 0.35rem 0 1rem;
   }
 
   .admin-note {
-    padding: 1rem;
+    padding: 1rem 1.1rem;
     border-left: 3px solid var(--color-bloom);
     background: color-mix(in srgb, var(--color-mist) 55%, white);
+    color: var(--color-ink-muted);
+    border-radius: 0 0.7rem 0.7rem 0;
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  .admin-note code {
+    font-size: 0.85em;
+    padding: 0.12em 0.4em;
+    border-radius: 0.3rem;
+    background: color-mix(in srgb, white 75%, var(--color-mist));
+    color: var(--color-ink);
   }
 </style>
