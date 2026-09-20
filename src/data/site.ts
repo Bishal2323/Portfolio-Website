@@ -1,8 +1,8 @@
 export const site = {
   name: "Bishal Lamsal",
-  role: "Computer Science Student ",
+  role: "Computer Science Student At University of Louisiana Monroe",
   tagline:
-    "Building with JavaScript, Python, and Java — from campus competitions to tools people can use.",
+    "Fixing Problems and Creating Solutions",
   stack: ["JavaScript", "Python", "Java"] as const,
   email: "mailto:bishallamsal2323@gmail.com",
   github: "https://github.com/Bishal2323",
