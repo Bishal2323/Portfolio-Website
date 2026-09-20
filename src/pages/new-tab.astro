@@ -1,0 +1,717 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { site } from "../data/site";
+
+const displayName = "Bishal Lamsal";
+const contactMail = site.email.startsWith("mailto:")
+  ? site.email
+  : `mailto:${site.email}`;
+const mailInquiry = `${contactMail}?subject=${encodeURIComponent("Portfolio Inquiry")}`;
+
+const topLinks = [
+  { label: "InterNav", href: "/projects#internav" },
+  { label: "Bloom Scroll", href: "/projects#bloom-scroll" },
+];
+
+const shortcuts = [
+  {
+    id: "about",
+    label: "About",
+    href: "/about",
+    keywords: ["about", "bio", "who", "me"],
+    icon: "user",
+  },
+  {
+    id: "projects",
+    label: "Projects",
+    href: "/projects",
+    keywords: ["projects", "work", "build", "code", "bloom", "internav"],
+    icon: "folder",
+  },
+  {
+    id: "experience",
+    label: "Experience",
+    href: "/experience",
+    keywords: ["experience", "jobs", "hackathon", "resume"],
+    icon: "briefcase",
+  },
+  {
+    id: "github",
+    label: "GitHub",
+    href: site.github,
+    keywords: ["github", "code", "repo", "source"],
+    icon: "github",
+    external: true,
+  },
+  {
+    id: "resume",
+    label: "Resume",
+    href: "/resume.pdf",
+    keywords: ["resume", "cv", "pdf"],
+    icon: "doc",
+  },
+  {
+    id: "contact",
+    label: "Contact",
+    href: contactMail,
+    keywords: ["contact", "email", "hello", "mail"],
+    icon: "mail",
+  },
+] as const;
+
+const drawerLinks = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Projects", href: "/projects" },
+  { label: "Experience", href: "/experience" },
+  { label: "GitHub", href: site.github, external: true },
+  { label: "LinkedIn", href: site.linkedin, external: true },
+];
+---
+
+<Layout
+  bare
+  title="New Tab — Bishal Lamsal"
+  description="Chrome-style new tab view of Bishal Lamsal's developer portfolio."
+>
+  <div class="nt">
+    <div class="nt__bg" aria-hidden="true"></div>
+
+    <header class="nt__top">
+      <nav class="nt__top-nav" aria-label="Quick links">
+        {
+          topLinks.map((item) => (
+            <a href={item.href} class="nt__top-link">
+              {item.label}
+            </a>
+          ))
+        }
+
+        <div class="nt__apps" data-apps>
+          <button
+            type="button"
+            class="nt__ghost-btn"
+            aria-expanded="false"
+            aria-controls="nt-apps-menu"
+            aria-label="Open menu"
+            data-apps-toggle
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <circle cx="5" cy="5" r="1.6"></circle>
+              <circle cx="12" cy="5" r="1.6"></circle>
+              <circle cx="19" cy="5" r="1.6"></circle>
+              <circle cx="5" cy="12" r="1.6"></circle>
+              <circle cx="12" cy="12" r="1.6"></circle>
+              <circle cx="19" cy="12" r="1.6"></circle>
+              <circle cx="5" cy="19" r="1.6"></circle>
+              <circle cx="12" cy="19" r="1.6"></circle>
+              <circle cx="19" cy="19" r="1.6"></circle>
+            </svg>
+          </button>
+          <div id="nt-apps-menu" class="nt__menu" hidden data-apps-menu role="menu">
+            {
+              drawerLinks.map((link) => (
+                <a
+                  href={link.href}
+                  class="nt__menu-item"
+                  role="menuitem"
+                  target={link.external ? "_blank" : undefined}
+                  rel={link.external ? "noopener noreferrer" : undefined}
+                >
+                  {link.label}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+
+        <a href="/about" class="nt__avatar" aria-label="About Bishal">
+          <img src="/images/headshot.jpg" alt="" width="32" height="32" />
+        </a>
+      </nav>
+    </header>
+
+    <main class="nt__stage">
+      <p class="nt__eyebrow">Portfolio</p>
+      <h1 class="nt__name">{displayName}</h1>
+
+      <form class="nt__search" data-search-form action={mailInquiry} method="get">
+        <label class="sr-only" for="ask-bishal">Search</label>
+        <span class="nt__search-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="m20 20-3.4-3.4"></path>
+          </svg>
+        </span>
+        <input
+          id="ask-bishal"
+          class="nt__search-input"
+          type="search"
+          name="q"
+          autocomplete="off"
+          placeholder="Search projects, about, contact…"
+          data-search-input
+        />
+        <button type="submit" class="nt__search-go">Ask</button>
+      </form>
+      <p class="nt__hint" data-search-hint hidden></p>
+
+      <ul class="nt__grid" data-shortcuts aria-label="Shortcuts">
+        {
+          shortcuts.map((s) => (
+            <li data-shortcut data-keywords={s.keywords.join(" ")}>
+              <a
+                href={s.href}
+                class="nt__tile"
+                target={"external" in s && s.external ? "_blank" : undefined}
+                rel={"external" in s && s.external ? "noopener noreferrer" : undefined}
+              >
+                <span class="nt__orb" aria-hidden="true">
+                  {s.icon === "user" && (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 12a4.25 4.25 0 1 0-4.25-4.25A4.25 4.25 0 0 0 12 12zm0 2c-3.7 0-7 1.85-7 4.15V20h14v-1.85C19 15.85 15.7 14 12 14z" />
+                    </svg>
+                  )}
+                  {s.icon === "folder" && (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M10.2 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-1.8-2z" />
+                    </svg>
+                  )}
+                  {s.icon === "briefcase" && (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M9 3h6a1 1 0 0 1 1 1v2h4a2 2 0 0 1 2 2v3H2V8a2 2 0 0 1 2-2h4V4a1 1 0 0 1 1-1zm1 3h4V5h-4v1zm12 7v5a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-5h7v1.2h6V13h7z" />
+                    </svg>
+                  )}
+                  {s.icon === "github" && (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.2-3.37-1.2-.45-1.15-1.1-1.46-1.1-1.46-.9-.62.07-.6.07-.6 1 .07 1.52 1.03 1.52 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94a3.86 3.86 0 0 1 1.03-2.68 3.6 3.6 0 0 1 .1-2.64s.84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.38.85.4 1.82.1 2.64a3.86 3.86 0 0 1 1.03 2.68c0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.86v2.76c0 .27.18.58.69.48A10 10 0 0 0 12 2z" />
+                    </svg>
+                  )}
+                  {s.icon === "doc" && (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm1 7V3.5L19.5 9H15zM8 13h8v1.8H8V13zm0 3.2h8V18H8v-1.8z" />
+                    </svg>
+                  )}
+                  {s.icon === "mail" && (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5L4 8V6l8 5 8-5v2z" />
+                    </svg>
+                  )}
+                </span>
+                <span class="nt__tile-label">{s.label}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </main>
+
+    <div class="nt__dock" data-customize>
+      <button
+        type="button"
+        class="nt__pencil"
+        aria-expanded="false"
+        aria-controls="nt-customize-menu"
+        aria-label="Customize"
+        data-customize-toggle
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path
+            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+          ></path>
+        </svg>
+      </button>
+      <div id="nt-customize-menu" class="nt__menu nt__menu--up" hidden data-customize-menu role="menu">
+        <a href="/" class="nt__menu-item" role="menuitem">Classic portfolio</a>
+        <a href="/projects" class="nt__menu-item" role="menuitem">All projects</a>
+        <a
+          href={site.github}
+          class="nt__menu-item"
+          role="menuitem"
+          target="_blank"
+          rel="noopener noreferrer">GitHub</a
+        >
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .nt {
+    position: relative;
+    min-height: 100svh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    color: #fff;
+  }
+
+  .nt__bg {
+    position: fixed;
+    inset: 0;
+    z-index: -10;
+    background: #152033 url("/background.jpg") center / cover no-repeat;
+  }
+
+  .nt__bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(8, 12, 20, 0.28) 0%, transparent 28%, transparent 62%, rgba(8, 12, 20, 0.4) 100%),
+      rgba(8, 12, 20, 0.22);
+  }
+
+  .nt__top {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1rem 1.15rem 0;
+  }
+
+  @media (min-width: 768px) {
+    .nt__top {
+      padding: 1.15rem 1.6rem 0;
+    }
+  }
+
+  .nt__top-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.35rem 0.45rem 0.35rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(10, 14, 22, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(12px);
+  }
+
+  .nt__top-link {
+    display: none;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: rgba(255, 255, 255, 0.92);
+    text-decoration: none;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+    transition: opacity 0.15s ease;
+  }
+
+  .nt__top-link:hover {
+    opacity: 0.75;
+  }
+
+  @media (min-width: 560px) {
+    .nt__top-link {
+      display: inline;
+    }
+  }
+
+  .nt__apps {
+    position: relative;
+  }
+
+  .nt__ghost-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .nt__ghost-btn:hover,
+  .nt__ghost-btn[aria-expanded="true"] {
+    background: rgba(255, 255, 255, 0.14);
+  }
+
+  .nt__avatar {
+    display: block;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1.5px rgba(255, 255, 255, 0.55),
+      0 2px 8px rgba(0, 0, 0, 0.25);
+    transition: transform 0.15s ease;
+  }
+
+  .nt__avatar:hover {
+    transform: scale(1.04);
+  }
+
+  .nt__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .nt__menu {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    right: 0;
+    z-index: 40;
+    min-width: 10.75rem;
+    padding: 0.4rem;
+    border-radius: 0.85rem;
+    background: rgba(255, 255, 255, 0.96);
+    color: #1a1f26;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(12px);
+  }
+
+  .nt__menu--up {
+    top: auto;
+    bottom: calc(100% + 0.45rem);
+  }
+
+  .nt__menu[hidden] {
+    display: none;
+  }
+
+  .nt__menu-item {
+    display: block;
+    padding: 0.55rem 0.7rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 550;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .nt__menu-item:hover {
+    background: rgba(15, 23, 42, 0.06);
+  }
+
+  .nt__stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 40rem;
+    margin-inline: auto;
+    padding: 0 1.25rem 5.5rem;
+    transform: translateY(-1.75rem);
+  }
+
+  .nt__eyebrow {
+    margin: 0;
+    font-size: 0.72rem;
+    font-weight: 650;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.78);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  }
+
+  .nt__name {
+    margin: 0.7rem 0 0;
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: clamp(2.6rem, 8vw, 4.1rem);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 0.98;
+    color: #fff;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
+  }
+
+  .nt__search {
+    margin-top: 1.6rem;
+    width: 100%;
+    max-width: 34rem;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.55rem 0.55rem 0.55rem 1.1rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.06),
+      0 12px 32px rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(16px);
+    transition: box-shadow 0.2s ease;
+  }
+
+  .nt__search:focus-within {
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.06),
+      0 16px 40px rgba(0, 0, 0, 0.22);
+  }
+
+  .nt__search-icon {
+    display: inline-flex;
+    color: #7a8490;
+    flex-shrink: 0;
+  }
+
+  .nt__search-input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    font: inherit;
+    font-size: 0.95rem;
+    color: #1a1f26;
+    outline: none;
+  }
+
+  .nt__search-input::placeholder {
+    color: #8b949e;
+  }
+
+  .nt__search-go {
+    flex-shrink: 0;
+    padding: 0.55rem 1.05rem;
+    border: none;
+    border-radius: 999px;
+    background: #1a1f26;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 650;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .nt__search-go:hover {
+    background: #000;
+  }
+
+  .nt__hint {
+    margin: 0.55rem 0 0;
+    min-height: 1rem;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.88);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+
+  .nt__grid {
+    margin: 2.1rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.15rem 0.5rem;
+    width: 100%;
+    max-width: 22rem;
+    justify-items: center;
+  }
+
+  @media (min-width: 560px) {
+    .nt__grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      max-width: 32rem;
+      gap: 1.25rem 0.35rem;
+    }
+  }
+
+  .nt__tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 4.75rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .nt__orb {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.35rem;
+    height: 3.35rem;
+    border-radius: 999px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.2) inset,
+      0 8px 20px rgba(0, 0, 0, 0.16);
+    backdrop-filter: blur(14px) saturate(1.2);
+    transition:
+      transform 0.2s ease,
+      background 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .nt__tile:hover .nt__orb,
+  .nt__tile:focus-visible .nt__orb {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.28);
+    border-color: rgba(255, 255, 255, 0.45);
+  }
+
+  .nt__tile:focus-visible {
+    outline: none;
+  }
+
+  .nt__tile:focus-visible .nt__orb {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+
+  .nt__tile-label {
+    margin-top: 0.5rem;
+    font-size: 0.72rem;
+    font-weight: 550;
+    letter-spacing: 0.01em;
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+  }
+
+  li[data-shortcut][hidden] {
+    display: none;
+  }
+
+  .nt__dock {
+    position: fixed;
+    right: 1.1rem;
+    bottom: 1.1rem;
+    z-index: 30;
+    margin-right: 6.5rem;
+  }
+
+  @media (max-width: 480px) {
+    .nt__dock {
+      margin-right: 0;
+      bottom: 5.25rem;
+    }
+  }
+
+  .nt__pencil {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 999px;
+    background: rgba(12, 16, 24, 0.45);
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    transition:
+      background 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .nt__pencil:hover,
+  .nt__pencil[aria-expanded="true"] {
+    background: rgba(12, 16, 24, 0.65);
+    color: #fff;
+  }
+</style>
+
+<script>
+  function setupMenu(rootSel: string, toggleSel: string, menuSel: string) {
+    const root = document.querySelector(rootSel);
+    const toggle = document.querySelector(toggleSel);
+    const menu = document.querySelector(menuSel);
+    if (!root || !toggle || !menu) return;
+
+    const close = () => {
+      toggle.setAttribute("aria-expanded", "false");
+      menu.setAttribute("hidden", "");
+    };
+
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const open = toggle.getAttribute("aria-expanded") === "true";
+      if (open) close();
+      else {
+        toggle.setAttribute("aria-expanded", "true");
+        menu.removeAttribute("hidden");
+      }
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!root.contains(e.target as Node)) close();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") close();
+    });
+  }
+
+  setupMenu("[data-apps]", "[data-apps-toggle]", "[data-apps-menu]");
+  setupMenu("[data-customize]", "[data-customize-toggle]", "[data-customize-menu]");
+
+  const form = document.querySelector<HTMLFormElement>("[data-search-form]");
+  const input = document.querySelector<HTMLInputElement>("[data-search-input]");
+  const hint = document.querySelector<HTMLElement>("[data-search-hint]");
+  const items = [...document.querySelectorAll<HTMLElement>("[data-shortcut]")];
+  const mailFallback =
+    form?.getAttribute("action") ||
+    "mailto:bishallamsal2323@gmail.com?subject=Portfolio%20Inquiry";
+
+  function filterShortcuts(query: string) {
+    const q = query.trim().toLowerCase();
+    let visible = 0;
+    let firstHref: string | null = null;
+
+    for (const item of items) {
+      const keywords = (item.dataset.keywords || "").toLowerCase();
+      const label =
+        item.querySelector(".nt__tile-label")?.textContent?.toLowerCase() || "";
+      const match = !q || keywords.includes(q) || label.includes(q);
+      item.hidden = !match;
+      if (match) {
+        visible += 1;
+        if (!firstHref) {
+          firstHref = item.querySelector("a")?.getAttribute("href") || null;
+        }
+      }
+    }
+
+    if (hint) {
+      if (!q) {
+        hint.hidden = true;
+        hint.textContent = "";
+      } else if (visible === 0) {
+        hint.hidden = false;
+        hint.textContent = "No match — Enter to email me.";
+      } else {
+        hint.hidden = false;
+        hint.textContent = `${visible} match${visible === 1 ? "" : "es"} — Enter opens first.`;
+      }
+    }
+
+    return { visible, firstHref };
+  }
+
+  input?.addEventListener("input", () => filterShortcuts(input.value));
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const q = input?.value || "";
+    const { visible, firstHref } = filterShortcuts(q);
+    if (q.trim() && visible > 0 && firstHref) {
+      window.location.href = firstHref;
+      return;
+    }
+    window.location.href = mailFallback;
+  });
+</script>

@@ -9,6 +9,15 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    title: "InterNav",
+    description:
+      "A custom indoor routing app that turns static building blueprints into an interactive navigation system — helping new students find their classes on campus.",
+    tags: ["JavaScript", "Maps", "UX"],
+    award: "Built at ULM Hawkathon",
+    link: "#",
+    repo: "#",
+  },
+  {
     title: "Bloom Scroll",
     description:
       "An AI-powered browser extension that filters unwanted content from social media feeds, so you see more of what matters and less of the noise.",

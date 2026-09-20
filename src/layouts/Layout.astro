@@ -5,12 +5,17 @@ import ChillButton from "../components/ChillButton.astro";
 interface Props {
   title?: string;
   description?: string;
+  /** Strip global mist background — used by experimental pages like /new-tab */
+  bare?: boolean;
+  showChill?: boolean;
 }
 
 const {
   title = "Bishal Lamsal — Software Developer & CS Student",
   description =
     "Software Developer and ULM Computer Science junior engineering web applications, indoor routing algorithms, and digital tools like Bloom Scroll.",
+  bare = false,
+  showChill = true,
 } = Astro.props;
 ---
 
@@ -36,13 +41,13 @@ const {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Syne:wght@500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap"
       rel="stylesheet"
     />
     <title>{title}</title>
   </head>
-  <body class="antialiased">
-    <ChillButton />
+  <body class:list={["antialiased", bare && "layout-bare"]}>
+    {showChill && <ChillButton />}
     <slot />
     <script>
       const observer = new IntersectionObserver(
