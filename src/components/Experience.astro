@@ -1,5 +1,5 @@
 ---
-import { experience, hackathons, certificates } from "../data/experience";
+import { experience, education, hackathons, certificates } from "../data/experience";
 ---
 
 <section
@@ -16,7 +16,7 @@ import { experience, hackathons, certificates } from "../data/experience";
         Experience
       </h2>
       <p class="mt-4 max-w-lg text-base text-ink-muted md:text-lg">
-        Roles beyond the editor — communication, design, and campus leadership.
+        Internships, campus roles, and work beyond the editor.
       </p>
     </div>
 
@@ -33,6 +33,9 @@ import { experience, hackathons, certificates } from "../data/experience";
                   {item.role}
                 </h3>
                 <p class="mt-1 text-sm font-semibold text-ink-muted">{item.org}</p>
+                {item.dates && (
+                  <p class="mt-1 text-sm text-ink-muted">{item.dates}</p>
+                )}
               </div>
               <p class="text-base leading-relaxed text-ink-muted md:text-lg">{item.detail}</p>
             </div>
@@ -40,6 +43,40 @@ import { experience, hackathons, certificates } from "../data/experience";
         ))
       }
     </ul>
+
+    <!-- Education -->
+    <div class="reveal mt-20 border-t border-line/60 pt-16">
+      <h3
+        class="font-display text-sm font-semibold uppercase tracking-[0.18em] text-ink-muted"
+      >
+        Education
+      </h3>
+      <ul class="mt-10 space-y-0">
+        {
+          education.map((item, index) => (
+            <li
+              class="reveal border-t border-line/70 py-8 first:border-t-0 first:pt-0 md:py-10"
+              style={`transition-delay: ${index * 80}ms`}
+            >
+              <div class="grid gap-3 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.4fr)] md:gap-12">
+                <div>
+                  <h4 class="font-display text-xl font-bold tracking-tight text-ink md:text-2xl">
+                    {item.school}
+                  </h4>
+                  <p class="mt-1 text-sm font-semibold text-ink-muted">
+                    {item.degree}, {item.field}
+                  </p>
+                  <p class="mt-1 text-sm text-ink-muted">{item.dates}</p>
+                </div>
+                {item.detail && (
+                  <p class="text-base leading-relaxed text-ink-muted md:text-lg">{item.detail}</p>
+                )}
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
 
     <!-- Hackathons -->
     <div class="reveal mt-20 border-t border-line/60 pt-16">

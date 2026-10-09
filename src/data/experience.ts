@@ -1,7 +1,16 @@
 export type Experience = {
   role: string;
   org: string;
+  dates?: string;
   detail: string;
+};
+
+export type Education = {
+  school: string;
+  degree: string;
+  field: string;
+  dates: string;
+  detail?: string;
 };
 
 export type Hackathon = {
@@ -26,10 +35,28 @@ export type Certificate = {
 
 export const experience: Experience[] = [
   {
+    role: "Information Technology Intern",
+    org: "City of Monroe, Louisiana",
+    dates: "August 2026 – Present",
+    detail:
+      "Supporting municipal IT operations — helping maintain systems, assist users, and keep city technology running day to day.",
+  },
+  {
     role: "Graphic Designer",
-    org: "Campus laboratory school",
+    org: "Emily Williamson Laboratory School",
+    dates: "July 2025 – November 2025",
     detail:
       "Designed visual materials for school programs, translating ideas into clear, memorable graphics.",
+  },
+];
+
+export const education: Education[] = [
+  {
+    school: "University of Louisiana Monroe",
+    degree: "Bachelor of Science — BS",
+    field: "Computer Science",
+    dates: "August 2024 – May 2028",
+    detail: "Undergraduate studies in computer science at ULM.",
   },
 ];
 
