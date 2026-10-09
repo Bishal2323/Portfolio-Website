@@ -271,127 +271,161 @@ footer {
   width: 100%;
 }
 
-/* Sprite-sheet birds (CodePen-style wing cycle + flight path) */
+/* Sprite-sheet birds — small + start mid-flight so they appear instantly */
 .birds-background {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
+  transform: translateZ(0);
 }
 
 .bird {
-  background-image: url("/bird-cells.svg");
-  background-size: auto 100%;
-  width: 88px;
-  height: 125px;
+  /* Compact sprite: 10 frames × 36px at 50px tall */
+  background-image: url("/bird-cells-sm.png");
+  background-repeat: no-repeat;
+  background-size: 360px 50px;
+  background-position: 0 0;
+  width: 36px;
+  height: 50px;
   will-change: background-position;
-  animation-name: fly-cycle;
-  animation-timing-function: steps(10);
-  animation-iteration-count: infinite;
-  opacity: 0.55;
+  animation: fly-cycle 0.85s steps(10) infinite;
+  opacity: 0.5;
 }
 
 [data-theme="dark"] .bird {
-  opacity: 0.7;
+  opacity: 0.65;
   filter: invert(1);
 }
 
 .bird--one {
-  animation-duration: 1s;
-  animation-delay: -0.5s;
+  animation-duration: 0.85s;
+  animation-delay: -0.4s;
 }
 
 .bird--two {
-  animation-duration: 0.9s;
-  animation-delay: -0.75s;
+  animation-duration: 0.75s;
+  animation-delay: -0.6s;
 }
 
 .bird--three {
-  animation-duration: 1.25s;
-  animation-delay: -0.25s;
+  animation-duration: 1s;
+  animation-delay: -0.2s;
 }
 
 .bird--four {
-  animation-duration: 1.1s;
+  animation-duration: 0.9s;
   animation-delay: -0.5s;
 }
 
 .bird-container {
   position: absolute;
-  top: 20%;
-  left: -10%;
-  transform: scale(0) translateX(-10vw);
+  left: 0;
+  width: 36px;
+  height: 50px;
   will-change: transform;
-  animation-name: fly-right-one;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
+  animation: fly-right-one 12s linear infinite;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
+/*
+  Negative delays = already mid-flight on first paint (no “stuck then start” wait).
+  ~3s apart between the first two left-side paths.
+*/
 .bird-container--one {
-  animation-duration: 15s;
-  animation-delay: 0s;
+  top: 18%;
+  animation-duration: 12s;
+  animation-delay: -3s;
 }
 
 .bird-container--two {
-  animation-duration: 16s;
-  animation-delay: 1s;
-  top: 30%;
+  top: 40%;
+  animation-duration: 13s;
+  animation-delay: -6s;
 }
 
 .bird-container--three {
-  animation-duration: 14.6s;
-  animation-delay: 9.5s;
-  top: 40%;
+  top: 55%;
+  animation-duration: 14s;
+  animation-delay: -1s;
 }
 
 .bird-container--four {
-  animation-duration: 16s;
-  animation-delay: 10.25s;
   top: 10%;
+  animation-duration: 15s;
+  animation-delay: -9s;
 }
 
 @keyframes fly-cycle {
-  100% {
-    background-position: -900px 0;
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -360px 0;
   }
 }
 
 @keyframes fly-right-one {
   0% {
-    transform: scale(0.3) translateX(-10vw);
+    transform: translate3d(-15vw, 0, 0) scale(1);
   }
-  10% {
-    transform: translateY(2vh) translateX(10vw) scale(0.4);
+  15% {
+    transform: translate3d(12vw, 1.5vh, 0) scale(1);
   }
-  20% {
-    transform: translateY(0vh) translateX(30vw) scale(0.5);
+  35% {
+    transform: translate3d(38vw, -1vh, 0) scale(1);
   }
-  30% {
-    transform: translateY(4vh) translateX(50vw) scale(0.6);
+  55% {
+    transform: translate3d(62vw, 2vh, 0) scale(1);
   }
-  40% {
-    transform: translateY(2vh) translateX(70vw) scale(0.6);
+  75% {
+    transform: translate3d(88vw, 0, 0) scale(1);
   }
-  50% {
-    transform: translateY(0vh) translateX(90vw) scale(0.6);
-  }
-  60%,
   100% {
-    transform: translateY(0vh) translateX(110vw) scale(0.6);
+    transform: translate3d(115vw, 0, 0) scale(1);
   }
 }
 
 @media (max-width: 640px) {
   .bird {
-    width: 64px;
-    height: 90px;
-    opacity: 0.4;
+    width: 28px;
+    height: 39px;
+    background-size: 280px 39px;
+    opacity: 0.48;
+    animation-duration: 0.8s;
+  }
+
+  .bird-container {
+    width: 28px;
+    height: 39px;
+  }
+
+  .bird-container--one {
+    top: 20%;
+    animation-duration: 10s;
+    animation-delay: -2.5s;
+  }
+
+  .bird-container--two {
+    top: 46%;
+    animation-duration: 11s;
+    animation-delay: -5.5s;
   }
 
   .bird-container--three,
   .bird-container--four {
     display: none;
+  }
+
+  @keyframes fly-cycle {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: -280px 0;
+    }
   }
 }
 

@@ -4,10 +4,9 @@ import { site } from "../data/site";
 const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
 
 const links = [
-  { href: "/", label: "Home", num: "01" },
-  { href: "/projects", label: "Projects", num: "02" },
-  { href: "/experience", label: "Experience", num: "03" },
-  { href: "/contact", label: "Contact", num: "04" },
+  { href: "/projects", label: "Projects", num: "01" },
+  { href: "/experience", label: "Experience", num: "02" },
+  { href: "/contact", label: "Contact", num: "03" },
 ];
 ---
 
@@ -22,9 +21,7 @@ const links = [
         {
           links.map((link) => {
             const active =
-              link.href === "/"
-                ? pathname === "/"
-                : pathname === link.href || pathname.startsWith(link.href);
+              pathname === link.href || pathname.startsWith(link.href);
             return (
               <li>
                 <a

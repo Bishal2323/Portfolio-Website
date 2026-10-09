@@ -1,5 +1,11 @@
 ---
 import { projects } from "../data/projects";
+
+const slug = (title: string) =>
+  title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 ---
 
 <section
@@ -23,7 +29,11 @@ import { projects } from "../data/projects";
     <ul class="mt-14 divide-y divide-line/70">
       {
         projects.map((project, index) => (
-          <li class={`project-item reveal py-10 md:py-12`} style={`transition-delay: ${index * 80}ms`}>
+          <li
+            id={slug(project.title)}
+            class={`project-item reveal py-10 md:py-12`}
+            style={`transition-delay: ${index * 80}ms`}
+          >
             <article class="grid gap-6 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.4fr)] md:gap-12">
               <div>
                 <p class="font-display text-xs font-semibold uppercase tracking-[0.2em] text-ink-muted">
