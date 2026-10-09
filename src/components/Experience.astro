@@ -11,7 +11,7 @@ import { experience, hackathons, certificates } from "../data/experience";
     <div class="reveal">
       <h2
         id="experience-heading"
-        class="font-display text-sm font-semibold uppercase tracking-[0.18em] text-bloom"
+        class="font-display text-sm font-semibold uppercase tracking-[0.18em] text-ink-muted"
       >
         Experience
       </h2>
@@ -32,7 +32,7 @@ import { experience, hackathons, certificates } from "../data/experience";
                 <h3 class="font-display text-xl font-bold tracking-tight text-ink md:text-2xl">
                   {item.role}
                 </h3>
-                <p class="mt-1 text-sm font-semibold text-bloom">{item.org}</p>
+                <p class="mt-1 text-sm font-semibold text-ink-muted">{item.org}</p>
               </div>
               <p class="text-base leading-relaxed text-ink-muted md:text-lg">{item.detail}</p>
             </div>
@@ -44,7 +44,7 @@ import { experience, hackathons, certificates } from "../data/experience";
     <!-- Hackathons -->
     <div class="reveal mt-20 border-t border-line/60 pt-16">
       <h3
-        class="font-display text-sm font-semibold uppercase tracking-[0.18em] text-bloom"
+        class="font-display text-sm font-semibold uppercase tracking-[0.18em] text-ink-muted"
       >
         Hackathons
       </h3>
@@ -74,7 +74,7 @@ import { experience, hackathons, certificates } from "../data/experience";
                   <span class="hackathon-card__view">View certificate</span>
                 </div>
                 <div class="hackathon-card__body">
-                  <p class="font-display text-xs font-semibold uppercase tracking-[0.16em] text-bloom">
+                  <p class="font-display text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted">
                     {item.title}
                   </p>
                   <h4 class="mt-2 font-display text-xl font-bold tracking-tight text-ink">
@@ -95,38 +95,59 @@ import { experience, hackathons, certificates } from "../data/experience";
     <!-- Certificates -->
     <div class="reveal mt-20 border-t border-line/60 pt-16">
       <h3
-        class="font-display text-sm font-semibold uppercase tracking-[0.18em] text-bloom"
+        class="font-display text-sm font-semibold uppercase tracking-[0.18em] text-ink-muted"
       >
         Certificates
       </h3>
+      <p class="mt-4 max-w-lg text-base text-ink-muted md:text-lg">
+        Verified credentials — open a badge for the full certificate, or verify on Credly.
+      </p>
 
-      <ul class="mt-10 grid gap-5 sm:grid-cols-2">
+      <ul class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {
           certificates.map((item) => (
             <li>
-              <button
-                type="button"
-                class="hackathon-card group w-full text-left"
-                data-certificate-src={item.certificate}
-                data-certificate-alt={item.certificateAlt}
-                data-certificate-title={item.title}
-                aria-haspopup="dialog"
-              >
-                <div class="hackathon-card__media">
-                  <img
-                    src={item.certificate}
-                    alt=""
-                    loading="lazy"
-                    class="hackathon-card__thumb"
-                  />
-                  <span class="hackathon-card__view">View certificate</span>
-                </div>
-                <div class="hackathon-card__body">
-                  <h4 class="font-display text-xl font-bold tracking-tight text-ink">
-                    {item.title}
-                  </h4>
-                </div>
-              </button>
+              <article class="hackathon-card cert-card">
+                <button
+                  type="button"
+                  class="cert-card__trigger group w-full text-left"
+                  data-certificate-src={item.certificate}
+                  data-certificate-alt={item.certificateAlt}
+                  data-certificate-title={item.title}
+                  aria-haspopup="dialog"
+                >
+                  <div class="hackathon-card__media cert-card__media">
+                    <img
+                      src={item.certificate}
+                      alt=""
+                      loading="lazy"
+                      class="hackathon-card__thumb cert-card__thumb"
+                    />
+                    <span class="hackathon-card__view">View badge</span>
+                  </div>
+                  <div class="hackathon-card__body">
+                    <p class="font-display text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted">
+                      {item.issuer}
+                    </p>
+                    <h4 class="mt-2 font-display text-lg font-bold tracking-tight text-ink md:text-xl">
+                      {item.title}
+                    </h4>
+                    <p class="mt-3 text-sm leading-relaxed text-ink-muted">{item.detail}</p>
+                  </div>
+                </button>
+                {item.verifyUrl && (
+                  <div class="cert-card__actions">
+                    <a
+                      href={item.verifyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="link-underline font-display text-sm font-semibold"
+                    >
+                      Verify on Credly
+                    </a>
+                  </div>
+                )}
+              </article>
             </li>
           ))
         }
@@ -235,6 +256,40 @@ import { experience, hackathons, certificates } from "../data/experience";
     padding: 1.1rem 1.15rem 1.25rem;
   }
 
+  .cert-card {
+    cursor: default;
+  }
+
+  .cert-card__trigger {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    color: inherit;
+    text-align: left;
+  }
+
+  .cert-card__media {
+    background: color-mix(in srgb, var(--color-mist) 70%, white);
+    display: grid;
+    place-items: center;
+  }
+
+  .cert-card__thumb {
+    object-fit: contain;
+    object-position: center;
+    padding: 1rem;
+    max-height: 100%;
+  }
+
+  .cert-card__actions {
+    padding: 0 1.15rem 1.2rem;
+    margin-top: -0.35rem;
+  }
+
   .certificate-modal[hidden] {
     display: none;
   }
@@ -332,15 +387,17 @@ import { experience, hackathons, certificates } from "../data/experience";
     document.body.style.overflow = "";
   }
 
-  document.querySelectorAll<HTMLButtonElement>(".hackathon-card").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      openCertificate(
-        btn.dataset.certificateSrc || "",
-        btn.dataset.certificateAlt || "",
-        btn.dataset.certificateTitle || "Certificate",
-      );
+  document
+    .querySelectorAll<HTMLButtonElement>(".hackathon-card[data-certificate-src], .cert-card__trigger")
+    .forEach((btn) => {
+      btn.addEventListener("click", () => {
+        openCertificate(
+          btn.dataset.certificateSrc || "",
+          btn.dataset.certificateAlt || "",
+          btn.dataset.certificateTitle || "Certificate",
+        );
+      });
     });
-  });
 
   document.querySelectorAll("[data-close-certificate]").forEach((el) => {
     el.addEventListener("click", () => closeCertificate());

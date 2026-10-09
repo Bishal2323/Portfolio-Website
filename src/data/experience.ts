@@ -16,8 +16,12 @@ export type Hackathon = {
 
 export type Certificate = {
   title: string;
+  issuer: string;
+  detail: string;
   certificate: string;
   certificateAlt: string;
+  /** Public Credly (or other) verification URL */
+  verifyUrl?: string;
 };
 
 export const experience: Experience[] = [
@@ -54,7 +58,30 @@ export const hackathons: Hackathon[] = [
 
 export const certificates: Certificate[] = [
   {
+    title: "AWS Certified Cloud Practitioner",
+    issuer: "Amazon Web Services",
+    detail:
+      "Foundational AWS cloud fluency — core services, pricing models, security, and how to identify the right building blocks for cloud-focused projects.",
+    certificate: "/images/certificates/aws-cloud-practitioner.png",
+    certificateAlt: "AWS Certified Cloud Practitioner badge — Credly",
+    verifyUrl:
+      "https://www.credly.com/badges/5eae8d64-a497-4cc0-887b-cce005121f28/public_url",
+  },
+  {
+    title: "AWS Certified AI Practitioner",
+    issuer: "Amazon Web Services",
+    detail:
+      "AI, ML, and generative AI concepts on AWS — choosing the right approaches for use cases and applying these tools responsibly.",
+    certificate: "/images/certificates/aws-ai-practitioner.png",
+    certificateAlt: "AWS Certified AI Practitioner badge — Credly",
+    verifyUrl:
+      "https://www.credly.com/badges/7f3a9abc-c957-4d1f-b760-efcc6dd5194b/public_url",
+  },
+  {
     title: "Google Cybersecurity",
+    issuer: "Google",
+    detail:
+      "Professional certificate covering security foundations, network defense, and hands-on tools used to protect systems and data.",
     certificate: "/images/certificates/google-cybersecurity.png",
     certificateAlt: "Google Cybersecurity Professional Certificate",
   },
