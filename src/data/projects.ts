@@ -26,3 +26,14 @@ export const projects: Project[] = [
     repo: "#",
   },
 ];
+
+/** Side builds, experiments, and one-weekend ships. */
+export const weekendDev: Project[] = [
+  {
+    title: "Clash-inDepth-Royale",
+    description: "Me and my firend always used to play clash royale and he would always loose to me so I made this webapp using ClashRoyaleAPI so that he can analyze game",
+    tags: ["JavaScript", "Python","JSON"],
+    link: "https://clash-in-depth-royale.vercel.app/",
+    repo: "https://github.com/Bishal2323/your-repo",
+  },
+];

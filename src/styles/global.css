@@ -251,6 +251,8 @@ footer {
 .project-title {
   position: relative;
   display: inline-block;
+  color: inherit;
+  transition: color 0.2s ease;
 }
 
 .project-title::after {
@@ -260,14 +262,22 @@ footer {
   bottom: 0.05em;
   height: 2px;
   width: 0;
-  background: var(--color-ink);
-  transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  background: #800020;
+  transition:
+    width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.2s ease;
+}
+
+.project-title:hover,
+.project-link:hover .project-title,
+.project-link:focus-visible .project-title,
+.project-item:hover .project-title {
+  color: #800020;
 }
 
 .project-link:hover .project-title::after,
 .project-link:focus-visible .project-title::after,
-.project-item:hover .project-title::after,
-.project-item.is-visible .project-title::after {
+.project-item:hover .project-title::after {
   width: 100%;
 }
 
